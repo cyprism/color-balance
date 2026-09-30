@@ -57,3 +57,31 @@ document.addEventListener('keydown', event => {
   menuButton?.setAttribute('aria-expanded', 'false');
   inquiryMenu?.removeAttribute('open');
 });
+
+const comingSoonLinks = document.querySelectorAll('[data-coming-soon]');
+let comingSoonTimer;
+
+comingSoonLinks.forEach(link => link.addEventListener('click', event => {
+  event.preventDefault();
+  const isProgramPopup = link.dataset.comingSoon === 'program';
+
+  let popup = document.querySelector('.coming-soon-popup');
+  if (!popup) {
+    popup = document.createElement('div');
+    popup.className = 'coming-soon-popup';
+    popup.setAttribute('role', 'status');
+    popup.setAttribute('aria-live', 'polite');
+    document.body.appendChild(popup);
+  }
+
+  clearTimeout(comingSoonTimer);
+  popup.classList.remove('visible');
+  popup.classList.toggle('program-popup', isProgramPopup);
+  if (isProgramPopup) {
+    popup.innerHTML = '<strong>프로그램 오픈을 준비하고 있습니다.</strong><span>나와 상대의 반응 차이를 이해하고, 일상에서 활용할 수 있는 컬러 프로그램을 준비 중입니다.</span><small>프로그램 및 협업 문의: hi.cyprism@gmail.com</small>';
+  } else {
+    popup.textContent = '준비 중입니다';
+  }
+  requestAnimationFrame(() => popup.classList.add('visible'));
+  comingSoonTimer = setTimeout(() => popup.classList.remove('visible'), isProgramPopup ? 5200 : 2200);
+}));
